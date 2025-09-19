@@ -1,0 +1,187 @@
+
+## **Step 1: Create a new Ionic project**
+
+```bash
+ionic start student-registration blank --type=angular
+cd student-registration
+```
+
+---
+
+## **Step 2: Generate pages (module-based)**
+
+```bash
+ionic generate page register --no-standalone
+ionic generate page details --no-standalone
+```
+
+> This generates **register** and **details** pages with `.module.ts` files.
+
+---
+
+## **Step 3: Configure Routing**
+
+Open `src/app/app-routing.module.ts`:
+
+```ts
+import { NgModule } from '@angular/core';
+import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+
+const routes: Routes = [
+  { path: '', redirectTo: 'register', pathMatch: 'full' },
+  { path: 'register', loadChildren: () => import('./register/register.module').then(m => m.RegisterPageModule) },
+  { path: 'details', loadChildren: () => import('./details/details.module').then(m => m.DetailsPageModule) },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}
+```
+
+---
+
+## **Step 4: Register Page**
+
+### `register.page.ts`
+
+```ts
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-register',
+  templateUrl: './register.page.html',
+  styleUrls: ['./register.page.scss']
+})
+export class RegisterPage {
+  student = {
+    name: '',
+    email: '',
+    dob: '',
+    city: '',
+    gender: '',
+    hobby: ''
+  };
+
+  constructor(private router: Router) {}
+
+  submitForm() {
+    this.router.navigate(['/details'], { state: this.student });
+  }
+}
+```
+
+### `register.page.html`
+
+```html
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Student Registration</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form (ngSubmit)="submitForm()">
+    <ion-item>
+      <ion-label position="floating">Name</ion-label>
+      <ion-input [(ngModel)]="student.name" name="name" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Email</ion-label>
+      <ion-input type="email" [(ngModel)]="student.email" name="email" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Date of Birth</ion-label>
+      <ion-datetime display-format="YYYY-MM-DD" [(ngModel)]="student.dob" name="dob" required></ion-datetime>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">City</ion-label>
+      <ion-input [(ngModel)]="student.city" name="city" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Gender</ion-label>
+      <ion-select [(ngModel)]="student.gender" name="gender" required>
+        <ion-select-option value="Male">Male</ion-select-option>
+        <ion-select-option value="Female">Female</ion-select-option>
+        <ion-select-option value="Other">Other</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Hobby</ion-label>
+      <ion-input [(ngModel)]="student.hobby" name="hobby"></ion-input>
+    </ion-item>
+
+    <ion-button expand="block" type="submit" class="ion-margin-top">Submit</ion-button>
+  </form>
+</ion-content>
+```
+
+---
+
+## **Step 5: Details Page**
+
+### `details.page.ts`
+
+```ts
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-details',
+  templateUrl: './details.page.html',
+  styleUrls: ['./details.page.scss']
+})
+export class DetailsPage {
+  student: any = {};
+
+  constructor(private router: Router) {
+    const nav = this.router.getCurrentNavigation();
+    this.student = nav?.extras?.state || {};
+  }
+}
+```
+
+### `details.page.html`
+
+```html
+<ion-header>
+  <ion-toolbar color="success">
+    <ion-title>Student Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Registration Data</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><strong>Name:</strong> {{ student.name }}</p>
+      <p><strong>Email:</strong> {{ student.email }}</p>
+      <p><strong>DOB:</strong> {{ student.dob }}</p>
+      <p><strong>City:</strong> {{ student.city }}</p>
+      <p><strong>Gender:</strong> {{ student.gender }}</p>
+      <p><strong>Hobby:</strong> {{ student.hobby }}</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-button expand="block" routerLink="/register">Back to Form</ion-button>
+</ion-content>
+```
+
+---
+
+## **Step 6: Run the Project**
+
+```bash
+ionic serve
+```
+
+

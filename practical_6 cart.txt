@@ -1,0 +1,88 @@
+Mainactivity
+package com.example.loginpage;
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+public class MainActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+    }
+}
+
+activity_main.xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".MainActivity">
+    <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Product Details"
+    android:textSize="24sp"
+    android:textStyle="bold"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginBottom="20dp"/>
+<RelativeLayout
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:padding="10dp"
+android:background="#F0F0F0">
+<ImageView
+    android:id="@+id/productImage"
+    android:layout_width="120dp"
+    android:layout_height="120dp"
+    android:src="@mipmap/ic_launcher"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
+    android:contentDescription="@string/product_image_description" />
+<TextView
+    android:id="@+id/productName"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Android Gadget"
+    android:textSize="20sp"
+    android:textStyle="bold"
+    android:layout_toEndOf="@id/productImage"
+    android:layout_marginStart="10dp"/>
+<TextView
+    android:id="@+id/productPrice"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="₹9,999"
+    android:textSize="18sp"
+    android:textColor="@android:color/holo_green_dark"
+    android:layout_below="@id/productName"
+    android:layout_toEndOf="@id/productImage"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="8dp"/>
+</RelativeLayout>
+<Button
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:text="Add to Cart"
+android:layout_marginTop="20dp"/>
+    </LinearLayout>
+
+
+(You also have the optional border.xml in res/drawable/ for styling if required.)
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <stroke android:width="1dp" android:color="#CCCCCC" />
+    <solid android:color="#FFFFFF" />
+</shape>
+
+
+
+ strings.xml (values file)
+
+Located in: res/values/strings.xml
+<resources>
+    <string name="app_name">LoginPage</string>
+    <string name="product_image_description">Image of the product</string>
+</resources>

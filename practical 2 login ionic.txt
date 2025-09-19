@@ -1,0 +1,215 @@
+
+---
+
+## **1. Create a new Ionic project**
+
+```bash
+ionic start user-login blank --type=angular
+cd user-login
+```
+
+* `blank` template keeps it minimal.
+* `--type=angular` ensures Angular is used.
+
+---
+
+## **2. Generate standalone pages**
+
+```bash
+ionic generate page user-form --standalone
+ionic generate page user-show --standalone
+```
+
+> `--standalone` is default in newer Ionic, but it ensures components don’t need `.module.ts`.
+
+---
+
+## **3. Configure routing**
+
+Open `src/app/app-routing.module.ts` and set routes:
+
+```ts
+import { NgModule } from '@angular/core';
+import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+
+const routes: Routes = [
+  { path: '', redirectTo: 'user-form', pathMatch: 'full' },
+  { path: 'user-form', loadComponent: () => import('./user-form/user-form.page').then(m => m.UserFormPage) },
+  { path: 'user-show', loadComponent: () => import('./user-show/user-show.page').then(m => m.UserShowPage) },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}
+```
+
+---
+
+## **4. User Form Page**
+
+### `user-form.page.ts`
+
+```ts
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-user-form',
+  standalone: true,
+  imports: [IonicModule, FormsModule],
+  templateUrl: './user-form.page.html',
+  styleUrls: ['./user-form.page.scss'],
+})
+export class UserFormPage {
+  name: string = '';
+  age: number | null = null;
+  email: string = '';
+  username: string = '';
+  password: string = '';
+
+  constructor(private router: Router) {}
+
+  onSubmit() {
+    if (this.username === 'admin' && this.password === '123') {
+      this.router.navigate(['/user-show'], {
+        queryParams: {
+          name: this.name,
+          age: this.age,
+          email: this.email,
+          username: this.username
+        }
+      });
+    } else {
+      alert('Invalid Username or Password');
+    }
+  }
+}
+```
+
+### `user-form.page.html`
+
+```html
+<ion-header>
+  <ion-toolbar>
+    <ion-title>User Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form (ngSubmit)="onSubmit()">
+    <ion-item>
+      <ion-label position="floating">Name</ion-label>
+      <ion-input [(ngModel)]="name" name="name" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Age</ion-label>
+      <ion-input type="number" [(ngModel)]="age" name="age" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Email</ion-label>
+      <ion-input type="email" [(ngModel)]="email" name="email" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Username</ion-label>
+      <ion-input [(ngModel)]="username" name="username" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Password</ion-label>
+      <ion-input type="password" [(ngModel)]="password" name="password" required></ion-input>
+    </ion-item>
+
+    <ion-button expand="full" type="submit" class="ion-margin-top">
+      Login
+    </ion-button>
+  </form>
+</ion-content>
+```
+
+---
+
+## **5. User Show Page**
+
+### `user-show.page.ts`
+
+```ts
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-user-show',
+  standalone: true,
+  imports: [IonicModule, CommonModule],
+  templateUrl: './user-show.page.html',
+  styleUrls: ['./user-show.page.scss'],
+})
+export class UserShowPage implements OnInit {
+  name: string = '';
+  age: number | null = null;
+  email: string = '';
+  username: string = '';
+  counter: number = 0;
+
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.name = params['name'];
+      this.age = params['age'];
+      this.email = params['email'];
+      this.username = params['username'];
+    });
+  }
+
+  incrementCounter() {
+    this.counter++;
+  }
+}
+```
+
+### `user-show.page.html`
+
+```html
+<ion-header>
+  <ion-toolbar>
+    <ion-title>User Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h2>Login Successful 🎉</h2>
+  <p><b>Name:</b> {{name}}</p>
+  <p><b>Age:</b> {{age}}</p>
+  <p><b>Email:</b> {{email}}</p>
+  <p><b>Username:</b> {{username}}</p>
+
+  <ion-button (click)="incrementCounter()">
+    Counter: {{counter}}
+  </ion-button>
+</ion-content>
+```
+
+---
+
+## **6. Run the App**
+
+```bash
+ionic serve
+```
+
+* Go to browser → `http://localhost:8100`
+* Fill the form with:
+
+  * `username: admin`
+  * `password: 123`
+* Click Login → see user details + counter button.
+
