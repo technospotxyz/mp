@@ -1,0 +1,7 @@
+[20/09, 8:15 am] Shubham Gupta: cordova create myApp com.exmple.myapp myApp
+[20/09, 8:15 am] Shubham Gupta: cd myApp
+[20/09, 8:16 am] Shubham Gupta: cordova platform add browser
+[20/09, 8:16 am] Shubham Gupta: cordova serve
+[20/09, 8:17 am] Shubham Gupta: Ionic start myApp blank --type=angular
+[20/09, 8:17 am] Shubham Gupta: ionic generate page userShow --no-standalone
+[20/09, 8:19 am] Shubham Gupta: cordova plugin add cordova-plugin-file
